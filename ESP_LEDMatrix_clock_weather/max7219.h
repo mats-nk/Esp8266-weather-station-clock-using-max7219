@@ -1,22 +1,23 @@
 // MAX7219 functions by Pawel A. Hernik
 
 // MAX7219 commands:
-#define CMD_NOOP   0
-#define CMD_DIGIT0 1
-#define CMD_DIGIT1 2
-#define CMD_DIGIT2 3
-#define CMD_DIGIT3 4
-#define CMD_DIGIT4 5
-#define CMD_DIGIT5 6
-#define CMD_DIGIT6 7
-#define CMD_DIGIT7 8
-#define CMD_DECODEMODE  9
+#define CMD_NOOP         0
+#define CMD_DIGIT0       1
+#define CMD_DIGIT1       2
+#define CMD_DIGIT2       3
+#define CMD_DIGIT3       4
+#define CMD_DIGIT4       5
+#define CMD_DIGIT5       6
+#define CMD_DIGIT6       7
+#define CMD_DIGIT7       8
+#define CMD_DECODEMODE   9
 #define CMD_INTENSITY   10
 #define CMD_SCANLIMIT   11
 #define CMD_SHUTDOWN    12
 #define CMD_DISPLAYTEST 15
 
-byte scr[NUM_MAX*8 + 8]; // +8 for scrolled char
+byte scr[NUM_MAX*8 + 8];  // +8 for scrolled char
+
 
 void sendCmd(int addr, byte cmd, byte data)
 {
@@ -28,6 +29,7 @@ void sendCmd(int addr, byte cmd, byte data)
   digitalWrite(CS_PIN, HIGH);
 }
 
+
 void sendCmdAll(byte cmd, byte data)
 {
   digitalWrite(CS_PIN, LOW);
@@ -38,10 +40,12 @@ void sendCmdAll(byte cmd, byte data)
   digitalWrite(CS_PIN, HIGH);
 }
 
+
 void refresh(int addr) {
   for (int i = 0; i < 8; i++)
     sendCmd(addr, i + CMD_DIGIT0, scr[addr * 8 + i]);
 }
+
 
 void refreshAll() {
   for (int c = 0; c < 8; c++) {
@@ -54,20 +58,24 @@ void refreshAll() {
  }
 }
 
+
 void clr()
 {
   for (int i = 0; i < NUM_MAX*8; i++) scr[i] = 0;
 }
+
 
 void scrollLeft()
 {
   for(int i=0; i < NUM_MAX*8+7; i++) scr[i] = scr[i+1];
 }
 
+
 void invert()
 {
   for (int i = 0; i < NUM_MAX*8; i++) scr[i] = ~scr[i];
 }
+
 
 void initMAX7219()
 {

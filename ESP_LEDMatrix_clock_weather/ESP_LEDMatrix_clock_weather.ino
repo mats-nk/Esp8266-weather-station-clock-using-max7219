@@ -6,7 +6,6 @@
   Download these library from library manager.
 */
 
-
 #include "Arduino.h"
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
@@ -30,15 +29,15 @@ String weatherString;
 
 #define NUM_MAX 4
 
-// for ESP-01 module
-//#define DIN_PIN 2 // D4
-//#define CS_PIN  3 // D9/RX
-//#define CLK_PIN 0 // D3
+// For ESP-01 module
+//#define DIN_PIN 2   // D4
+//#define CS_PIN  3   // D9/RX
+//#define CLK_PIN 0   // D3
 
-// for NodeMCU 1.0
-#define DIN_PIN 15  // D8
-#define CS_PIN  13  // D7
-#define CLK_PIN 12  // D6
+// For NodeMCU 1.0
+#define DIN_PIN 15    // D8
+#define CS_PIN  13    // D7
+#define CLK_PIN 12    // D6
 
 #include "max7219.h"
 #include "fonts.h"
@@ -46,13 +45,14 @@ String weatherString;
 // =======================================================================
 // CHANGE YOUR CONFIG HERE:
 // =======================================================================
-const char* ssid     = "yourssidname";     // SSID of local network
-const char* password = "yourpassward";   // Password on network
-String weatherKey = "weatherkeyfromopenweather"; // city id from openweather 
-String weatherLang = "&lang=en";
-String cityID = "idfromopenweather"; // Cityid from open weather
-// read OpenWeather api description for more info
+const char* ssid     = "yourssidname";            // SSID of local network
+const char* password = "yourpassword";            // Password on network
+String weatherKey = "weatherkeyfromopenweather";  // OpenWeather API Key
+String weatherLang = "&lang=en";                  // OpenWeather language
+String cityID = "idfromopenweather";              // OpenWeather CityId
+// Read OpenWeather api description for more info
 // =======================================================================
+
 
 void setup() 
 {
@@ -83,10 +83,12 @@ int dx=0;
 int dy=0;
 byte del=0;
 int h,m,s;
+
+
 // =======================================================================
 void loop()
 {
-  if(updCnt<=0) { // every 10 scrolls, ~450s=7.5m
+  if(updCnt<=0) {   // Every 10 scrolls, ~450s=7.5m
     updCnt = 10;
     Serial.println("Getting data ...");
     printStringWithShift("   Getting Data Wait   ",40);
@@ -97,7 +99,7 @@ void loop()
     clkTime = millis();
   }
  
-  if(millis()-clkTime > 15000 && !del && dots) { // clock for 15s, then scrolls for about 30s
+  if(millis()-clkTime > 15000 && !del && dots) {   // Show clock for 15s, then scrolls for about 30s
     printStringWithShift(date.c_str(),40);
     printStringWithShift(currencyRates.c_str(),35);
     printStringWithShift(weatherString.c_str(),40);
@@ -112,8 +114,8 @@ void loop()
   showSimpleClock();
 }
 
-// =======================================================================
 
+// =======================================================================
 void showSimpleClock()
 {
   dx=dy=0;
@@ -132,8 +134,8 @@ void showSimpleClock()
   refreshAll();
 }
 
-// =======================================================================
 
+// =======================================================================
 void showAnimClock()
 {
   byte digPos[6]={0,5,12,17,24,28};
@@ -173,8 +175,8 @@ void showAnimClock()
   delay(30);
 }
 
-// =======================================================================
 
+// =======================================================================
 void showDigit(char ch, int col, const uint8_t *data)
 {
   if(dy<-8 | dy>8) return;
@@ -188,8 +190,8 @@ void showDigit(char ch, int col, const uint8_t *data)
     }
 }
 
-// =======================================================================
 
+// =======================================================================
 void setCol(int col, byte v)
 {
   if(dy<-8 | dy>8) return;
@@ -198,8 +200,8 @@ void setCol(int col, byte v)
     if(!dy) scr[col] = v; else scr[col] |= dy>0 ? v>>dy : v<<-dy;
 }
 
-// =======================================================================
 
+// =======================================================================
 int showChar(char ch, const uint8_t *data)
 {
   int len = pgm_read_byte(data);
@@ -209,6 +211,7 @@ int showChar(char ch, const uint8_t *data)
   scr[NUM_MAX*8 + i] = 0;
   return w;
 }
+
 
 // =======================================================================
 int dualChar = 0;
@@ -222,24 +225,24 @@ unsigned char convertPolish(unsigned char _c)
   }
   if(dualChar) {
     switch(_c) {
-      case 133: c = 1+'~'; break; // 'ą'
-      case 135: c = 2+'~'; break; // 'ć'
-      case 153: c = 3+'~'; break; // 'ę'
-      case 130: c = 4+'~'; break; // 'ł'
+      case 133: c = 1+'~'; break;        // 'ą'
+      case 135: c = 2+'~'; break;        // 'ć'
+      case 153: c = 3+'~'; break;        // 'ę'
+      case 130: c = 4+'~'; break;        // 'ł'
       case 132: c = dualChar==197 ? 5+'~' : 10+'~'; break; // 'ń' and 'Ą'
-      case 179: c = 6+'~'; break; // 'ó'
-      case 155: c = 7+'~'; break; // 'ś'
-      case 186: c = 8+'~'; break; // 'ź'
-      case 188: c = 9+'~'; break; // 'ż'
-      //case 132: c = 10+'~'; break; // 'Ą'
-      case 134: c = 11+'~'; break; // 'Ć'
-      case 152: c = 12+'~'; break; // 'Ę'
-      case 129: c = 13+'~'; break; // 'Ł'
-      case 131: c = 14+'~'; break; // 'Ń'
-      case 147: c = 15+'~'; break; // 'Ó'
-      case 154: c = 16+'~'; break; // 'Ś'
-      case 185: c = 17+'~'; break; // 'Ź'
-      case 187: c = 18+'~'; break; // 'Ż'
+      case 179: c = 6+'~'; break;        // 'ó'
+      case 155: c = 7+'~'; break;        // 'ś'
+      case 186: c = 8+'~'; break;        // 'ź'
+      case 188: c = 9+'~'; break;        // 'ż'
+      //case 132: c = 10+'~'; brea  k;   // 'Ą'
+      case 134: c = 11+'~'; break;       // 'Ć'
+      case 152: c = 12+'~'; break;       // 'Ę'
+      case 129: c = 13+'~'; break;       // 'Ł'
+      case 131: c = 14+'~'; break;       // 'Ń'
+      case 147: c = 15+'~'; break;       // 'Ó'
+      case 154: c = 16+'~'; break;       // 'Ś'
+      case 185: c = 17+'~'; break;       // 'Ź'
+      case 187: c = 18+'~'; break;       // 'Ż'
       default:  break;
     }
     dualChar = 0;
@@ -269,8 +272,8 @@ unsigned char convertPolish(unsigned char _c)
   return c;
 }
 
-// =======================================================================
 
+// =======================================================================
 void printCharWithShift(unsigned char c, int shiftDelay) {
   c = convertPolish(c);
   if (c < ' ' || c > '~'+25) return;
@@ -283,8 +286,8 @@ void printCharWithShift(unsigned char c, int shiftDelay) {
   }
 }
 
-// =======================================================================
 
+// =======================================================================
 void printStringWithShift(const char* s, int shiftDelay){
   while (*s) {
     printCharWithShift(*s, shiftDelay);
@@ -292,8 +295,8 @@ void printStringWithShift(const char* s, int shiftDelay){
   }
 }
 
-// =======================================================================
 
+// =======================================================================
 const char *weatherHost = "api.openweathermap.org";
 
 void getWeatherData()
@@ -350,19 +353,16 @@ void getWeatherData()
   weatherString += "  Wind: " + String(windSpeed,1) + "m/s                 ";
 }
 
-// =======================================================================
-
 
 // =======================================================================
-
-float utcOffset = 5.50;  //Change utcoffset according to your utc any +- varry a little bit adjust it as per the needs.
+float utcOffset = 5.50;  // Change UTC offset according to your utc any +- varry a little bit adjust it as per the needs.
 long localEpoc = 0;
 long localMillisAtUpdate = 0;
 
 void getTime()
 {
   WiFiClient client;
-  if (!client.connect("www.google.co.in", 80)) {
+  if (!client.connect("www.google.com", 80)) {
     Serial.println("connection to google failed");
     return;
   }
@@ -394,8 +394,8 @@ void getTime()
   client.stop();
 }
 
-// =======================================================================
 
+// =======================================================================
 void updateTime()
 {
   long curEpoch = localEpoc + ((millis() - localMillisAtUpdate) / 1000);
@@ -404,5 +404,6 @@ long epoch = (long)(round(curEpoch + 3600 * utcOffset + 86400L)) % 86400L;
   m = (epoch % 3600) / 60;
   s = epoch % 60;
 }
+
 
 // =======================================================================
